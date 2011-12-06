@@ -731,7 +731,7 @@ readAlmanac() ->
 	Table = parseTable(),
 	% read the file
 	% the url and max cache time are config params
-	Lines = getFile("/var/run/almanac", getStr("GSM.RRLP.ALMANAC.URL"), getNum("GSM.RRLP.ALMANAC.REFRESH.TIME")),
+	Lines = getFile("/tmp/almanac", getStr("GSM.RRLP.ALMANAC.URL"), getNum("GSM.RRLP.ALMANAC.REFRESH.TIME")),
 	% io:format("Lines=~p\n", [Lines]),
 	% Apply the parser to the lines.
 	parseAlmanac([], Lines, [], Table, 0).
@@ -907,7 +907,7 @@ readEphemeris() ->
 	% read the adjustment table that gives corrections, scaling, etc
 	AdjustTable = ephemerisAdjustTable(),
 	% read the file.  the url and max cache age are config params
-	Lines = getFile("/var/run/ephemeris", getStr("GSM.RRLP.EPHEMERIS.URL"), getNum("GSM.RRLP.EPHEMERIS.REFRESH.TIME")),
+	Lines = getFile("/tmp/ephemeris", getStr("GSM.RRLP.EPHEMERIS.URL"), getNum("GSM.RRLP.EPHEMERIS.REFRESH.TIME")),
 	% io:format("Lines=~p\n", [Lines]),
 	% parse the lines from the global part of the ephemeris
 	% RestOfLines = the satellite part of the ephemeris

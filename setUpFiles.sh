@@ -1,5 +1,5 @@
 #!/bin/bash
-CGIBIN=/var/cgi-bin
+CGIBIN=/usr/lib/cgi-bin
 cp RRLP.beam $CGIBIN
 cp RRLP.hrl $CGIBIN
 cp rrlpserver.beam $CGIBIN
