@@ -27,7 +27,7 @@
 %%% dump out contents of all files in ../tests using asn1 generated code
 run() ->
     make:all(),
-    {ok,Files}=file:list_dir("../tests"),
+    {ok,Files}=file:list_dir("tests"),
 	io:format("files=~p\n", [Files]),
 	{ok,RE}=re:compile("\\.per"),
     lists:foreach(fun(X) -> runtest(X) end, [X||X<-Files,re:run(X,RE) /= nomatch]),
@@ -35,7 +35,7 @@ run() ->
 
 runtest(Filename) ->
 	io:format("******************************* running ~s\n", [Filename]),
-    {ok,Contents}=file:read_file("../tests/" ++ Filename),
+    {ok,Contents}=file:read_file("tests/" ++ Filename),
 	io:format("Contents of ~s = ~w~n", [Filename, Contents]),
 	case xrrlp:decode(Contents) of
 		{error, Error} ->
