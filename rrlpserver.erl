@@ -327,15 +327,15 @@ locationRequest(Accuracy, ResponseTime, Ephemeris) ->
 	#'PDU'{referenceNumber=1,
 		component={msrPositionReq, #'MsrPosition-Req'{
 			% you can include all the assistance data you want within the loc req
-			'gps-AssistData'=#'GPS-AssistData'{
+			%'gps-AssistData'=#'GPS-AssistData'{
 				% we're just going with reference time
 				% the rest of the assistance data goes separately
-				controlHeader=#'ControlHeader'{
-					referenceTime=referenceTime(Ephemeris)
-				}
-			},
+			%	controlHeader=#'ControlHeader'{
+			%		referenceTime=referenceTime(Ephemeris)
+			%	}
+			%},
 			% here's the loc req, telling about method, accuracy, response time
-			positionInstruct=#'PositionInstruct'{
+			  positionInstruct=#'PositionInstruct'{
 				methodType={msBased, Accuracy}, % did the spec change?
 				positionMethod=gps,
 				measureResponseTime=ResponseTime,
@@ -442,6 +442,7 @@ assist() ->
 	% navigation model - data from the ephemeris
 	EphemerisStuff = genEphemerisStuff(Ephemeris),
 	% put them all together into a list of pdu's
+%	AlmanacStuff ++ SmallEphemerisStuff ++ EphemerisStuff.
 	AlmanacStuff ++ EphemerisStuff ++ SmallEphemerisStuff.
 
 % generate ephemeris apdus
@@ -497,7 +498,12 @@ smallEphemerisStuff(Ephemeris) ->
 						refLocation=refLocation(),
 						ionosphericModel=ionosphericModel(Ephemeris),
 						utcModel=utcModel(Ephemeris)
-					}}}}}.
+					}
+				},
+				moreAssDataToBeSent='noMoreMessages'
+			}
+		}
+	}.
 
 % generate the apdu for Length satellites in the ephmeris, starting with First
 navigationModelSubset(Ephemeris, First, Length) ->
@@ -506,7 +512,12 @@ navigationModelSubset(Ephemeris, First, Length) ->
 			    'gps-AssistData'=#'GPS-AssistData'{
 					controlHeader=#'ControlHeader'{
 						navigationModel=navigationModel(Ephemeris, First, Length)
-					}}}}}.
+					}
+				},
+				moreAssDataToBeSent='moreMessagesOnTheWay'
+			}
+		}
+	}.
 
 % generate the apdu for Length satellites in the almanac, starting with First
 almanacSubset(Almanac, First, Length) ->
@@ -585,7 +596,7 @@ navigationModel({_, SatAsts}, First, Length) ->
 % given a dictionary of satellite ephemeris parameters, generate apdu encoding for navigation model
 seqOfNavModelElement(SatAst) ->
 	#'NavModelElement'{
-		satelliteID = dictFetch("satelliteID", SatAst),
+		satelliteID = dictFetch("satelliteID", SatAst)+1,
 		satStatus = {newSatelliteAndModelUC, uncompressedEphemeris(SatAst)}}.
 
 % fetch the parameters from the dictionary, and generate a big old apdu record
